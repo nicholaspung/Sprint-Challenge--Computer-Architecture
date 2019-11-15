@@ -19,14 +19,14 @@ class CPU:
             0b0000: self.handle_add,
             0b0010: self.handle_mul,
             0b0111: self.handle_cmp,
-            # AND OR XOR NOT SHL SHR MOD
             0b1000: self.handle_and,
             0b1010: self.handle_or,
             0b1011: self.handle_xor,
             0b1001: self.handle_not,
             0b1100: self.handle_shl,
             0b1101: self.handle_shr,
-            0b0100: self.handle_mod
+            0b0100: self.handle_mod,
+            0b0001: self.handle_addi # Adds an immediate value to a register
         }
         self.pc_dispatch = {
             0b0000: self.handle_call,
@@ -42,6 +42,9 @@ class CPU:
             0b0110: self.handle_pop,
             0b0001: self.handle_hlt
         }
+
+    def handle_addi(self, reg_a, value):
+        self.reg[reg_a] += value
 
     def handle_shl(self, reg_a, reg_b):
         self.reg[reg_a] = self.reg[reg_a] << self.reg[reg_b]
