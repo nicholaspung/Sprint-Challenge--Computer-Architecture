@@ -38,10 +38,14 @@ class CPU:
     def handle_jne(self, reg_value):
         if self.fl != 0b00000001:
             self.pc = self.reg[reg_value]
+        else:
+            self.pc += 2
 
     def handle_jeq(self, reg_value):
         if self.fl == 0b00000001:
             self.pc = self.reg[reg_value]
+        else:
+            self.pc += 2
 
     def handle_jmp(self, reg_value):
         address = self.reg[reg_value]
@@ -53,13 +57,13 @@ class CPU:
         set_g = set_e << 1
         set_l = set_e << 2
 
-        if reg_a == reg_b:
+        if self.reg[reg_a] == self.reg[reg_b]:
             # set flag e to 1
             self.fl = set_e
-        elif reg_a > reg_b:
+        elif self.reg[reg_a] > self.reg[reg_b]:
             # set flag g to 1
             self.fl = set_g
-        else:
+        elif self.reg[reg_a] < self.reg[reg_b]:
             # set flag l to 1
             self.fl = set_l
 
