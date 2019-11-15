@@ -17,11 +17,15 @@ class CPU:
         self.fl = 0
         self.alu_dispatch = {
             0b0000: self.handle_add,
-            0b0010: self.handle_mul
+            0b0010: self.handle_mul,
+            0b0111: self.handle_cmp
         }
         self.pc_dispatch = {
             0b0000: self.handle_call,
-            0b0001: self.handle_ret
+            0b0001: self.handle_ret,
+            0b0100: self.handle_jmp,
+            0b0101: self.handle_jeq,
+            0b0110: self.handle_jne
         }
         self.op_dispatch = {
             0b0010: self.handle_ldi,
@@ -30,6 +34,34 @@ class CPU:
             0b0110: self.handle_pop,
             0b0001: self.handle_hlt
         }
+
+    def handle_jne(self, reg_value):
+        if self.fl != 0b00000001:
+            self.pc = self.reg[reg_value]
+
+    def handle_jeq(self, reg_value):
+        if self.fl == 0b00000001:
+            self.pc = self.reg[reg_value]
+
+    def handle_jmp(self, reg_value):
+        address = self.reg[reg_value]
+
+        self.pc = address
+
+    def handle_cmp(self, reg_a, reg_b): # 00000LGE
+        set_e = 0b00000001
+        set_g = set_e << 1
+        set_l = set_e << 2
+
+        if reg_a == reg_b:
+            # set flag e to 1
+            self.fl = set_e
+        elif reg_a > reg_b:
+            # set flag g to 1
+            self.fl = set_g
+        else:
+            # set flag l to 1
+            self.fl = set_l
 
     def handle_call(self, reg_value):
         # Hard coding 2nd operand - instruction directly after CALL
