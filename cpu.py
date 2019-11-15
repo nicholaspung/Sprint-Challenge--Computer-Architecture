@@ -18,7 +18,15 @@ class CPU:
         self.alu_dispatch = {
             0b0000: self.handle_add,
             0b0010: self.handle_mul,
-            0b0111: self.handle_cmp
+            0b0111: self.handle_cmp,
+            # AND OR XOR NOT SHL SHR MOD
+            0b1000: self.handle_and,
+            0b1010: self.handle_or,
+            0b1011: self.handle_xor,
+            0b1001: self.handle_not,
+            0b1100: self.handle_shl,
+            0b1101: self.handle_shr,
+            0b0100: self.handle_mod
         }
         self.pc_dispatch = {
             0b0000: self.handle_call,
@@ -34,6 +42,30 @@ class CPU:
             0b0110: self.handle_pop,
             0b0001: self.handle_hlt
         }
+
+    def handle_shl(self, reg_a, reg_b):
+        self.reg[reg_a] = self.reg[reg_a] << self.reg[reg_b]
+
+    def handle_shr(self, reg_a, reg_b):
+        self.reg[reg_a] = self.reg[reg_a] >> self.reg[reg_b]
+
+    def handle_mod(self, reg_a, reg_b):
+        if self.reg[reg_b] == 0:
+            self.handle_hlt()
+
+        self.reg[reg_a] = self.reg[reg_a] % self.reg[reg_b]
+
+    def handle_not(self, reg_a):
+        self.reg[reg_a] = ~self.reg[reg_a]
+
+    def handle_xor(self, reg_a, reg_b):
+        self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
+
+    def handle_or(self, reg_a, reg_b):
+        self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+
+    def handle_and(self, reg_a, reg_b):
+        self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
 
     def handle_jne(self, reg_value):
         if self.fl != 0b00000001:
